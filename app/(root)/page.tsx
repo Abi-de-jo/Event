@@ -1,8 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import CategoryFilter from '@/components/shared/CategoryFilter';
-import Collection from '@/components/shared/Collection'
-import Search from '@/components/shared/Search';
+ 
 
 export default function Home() {
   return (
