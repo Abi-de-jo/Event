@@ -1,10 +1,20 @@
-import { connectToDatabase } from '@/lib/database/mongodb';
+import mongoose from 'mongoose';
 
-export default async function handler(req:any, res:any) {
-  try {
-    await connectToDatabase();
-    res.status(200).json({ message: '✅ Connected to MongoDB' });
-  } catch (error) {
-    res.status(500).json({ error: '❌ MongoDB connection failed' });
-  }
+const MONGODB_URI = process.env.MONGODB_URI;
+
+let cached = (global as any).mongoose || { conn: null, promise: null };
+
+export const connectToDatabase = async () => {
+  if (cached.conn) return cached.conn;
+
+  if(!MONGODB_URI) throw new Error('MONGODB_URI is missing');
+
+  cached.promise = cached.promise || mongoose.connect(MONGODB_URI, {
+    dbName: 'evently',
+    bufferCommands: false,
+  })
+
+  cached.conn = await cached.promise;
+
+  return cached.conn;
 }
